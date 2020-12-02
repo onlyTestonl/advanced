@@ -1,0 +1,12 @@
+<p>
+    <?=$article->title?>
+</p>
+<p>
+    <?=$article->text?>
+</p>
+<p>
+    <?=$article->data?>
+</p>
+<p>
+    <?=$article->hits?>
+</p>
