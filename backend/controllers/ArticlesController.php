@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\Picture;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -38,8 +39,11 @@ class ArticlesController extends Controller
     {
         $articles=Articles::find()->all();
 
+        $pictures=Picture::find()->all();
+
         return $this->render('index',[
-            'articles'=>$articles
+            'articles'=>$articles,
+            'pictures'=>$pictures,
         ]);
     }
 

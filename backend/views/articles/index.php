@@ -15,8 +15,20 @@ use yii\helpers\Url;
 
         <div class="row">
             <? foreach($articles as $article):?>
+            <?php
+                foreach($pictures as $picture){
+                    if ($picture->id==$article->picture_id) {
+                        $path = '/backend/web/img/article_pics/' . $article->id . '/' . $picture->name;
+
+                    }
+                    else {
+                        $path ='/backend/web/img/article_pics/1/264566.jpg';
+                    }
+                }
+
+                ?>
             <div class="col-lg-4">
-                <img src="/"/>
+                <img src="<?= $path;?>" width="col-lg-4" height="200px"/>
                 <h2><?=$article->title?></h2>
 
                 <p><?=$article->getShortText($article->text)?></p>
@@ -25,7 +37,7 @@ use yii\helpers\Url;
 
                 <p><?=$article->hits?></p>
 
-                <p><a class="btn btn-default" href="<?=Url::to(['articles/article', 'id'=>$article->id] )?>"><?=$article->title?> &raquo;</a></p>
+                <p><a class="btn btn-default" href="<?=Url::to(['articles/article', 'id'=>$article->id] )?>">Подробнее &raquo;</a></p>
             </div>
             <? endforeach; ?>
         </div>

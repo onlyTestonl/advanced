@@ -4,6 +4,7 @@ namespace backend\controllers;
 use backend\models\Articles;
 use backend\models\Picture;
 use Yii;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -69,15 +70,23 @@ class SiteController extends Controller
             $article->title=Yii::$app->request->post()["Articles"]['title'];
             $article->text=Yii::$app->request->post()["Articles"]['text'];
             $article->data=Yii::$app->request->post()["Articles"]['data'];
+            $article->save();
 
 
             ($_FILES["Picture"]["name"]['name']? $picture->name=UploadedFile::getInstance($picture, 'name'):"");
 //            if($picture->name && $picture->validate()){
-                $picture->name->saveAs(Yii::getAlias('@backend/web/img/article_pics/' .
-                    '1'. '/'). $picture->name->baseName . '.' .
-                $picture->name->extension);
+
+            $article_id=Articles::find()->select(['id'])->orderBy('id desc')->limit(1)->one();
+            $picture->article_id=$article_id->id;
+
+            $path = Yii::getAlias('@backend/web/img/article_pics/' .$picture->article_id . '/');
+
+            if (FileHelper::createDirectory($path, $mode = 0775, $recursive = true)) {
+                $picture->name->saveAs(Yii::getAlias($path). $picture->name->baseName . '.' .
+                    $picture->name->extension);
+            }
+
                 $picture->name=$picture->name->baseName . '.' . $picture->name->extension;
-                $picture->article_id=1;
 
 
                 $picture->save();
@@ -88,15 +97,9 @@ class SiteController extends Controller
 
             $pic_id=Picture::find()->select(['id'])->orderBy('id desc')->limit(1)->one();
 
-            $article->picture_id=$pic_id->id;
+            $article_id->picture_id=$pic_id->id;
 
-            $article->save();
-
-
-            $pic_upd=Picture::find()->select(['article_id'])->orderBy('id desc')->limit(1)->one();
-            $article_id=Articles::find()->select(['id'])->orderBy('id desc')->limit(1)->one();
-            $pic_upd->article_id=$article_id;
-            $pic_upd->save();
+            $article_id->save();
 
 
         }
