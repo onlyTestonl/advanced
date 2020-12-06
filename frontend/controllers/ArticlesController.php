@@ -4,7 +4,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use frontend\models\Articles;
+use common\models\Articles;
 use yii\web\Controller;
 
 /**
@@ -20,25 +20,9 @@ class ArticlesController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
-                'rules' => [
-                    [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
             ],
         ];
     }

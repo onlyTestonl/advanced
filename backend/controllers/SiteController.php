@@ -1,7 +1,8 @@
 <?php
+
 namespace backend\controllers;
 
-use backend\models\Articles;
+use common\models\Articles;
 use backend\models\Picture;
 use Yii;
 use yii\helpers\FileHelper;
@@ -64,42 +65,27 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        if (Yii::$app->request->isPost){
-            $article=new Articles;
-            $picture=new Picture;
-            $article->title=Yii::$app->request->post()["Articles"]['title'];
-            $article->text=Yii::$app->request->post()["Articles"]['text'];
-            $article->data=Yii::$app->request->post()["Articles"]['data'];
+        if (Yii::$app->request->isPost) {
+            $article = new Articles;
+            $picture = new Picture;
+            $article->title = Yii::$app->request->post()["Articles"]['title'];
+            $article->text = Yii::$app->request->post()["Articles"]['text'];
+            $article->data = Yii::$app->request->post()["Articles"]['data'];
             $article->save();
 
 
-            ($_FILES["Picture"]["name"]['name']? $picture->name=UploadedFile::getInstance($picture, 'name'):"");
-//            if($picture->name && $picture->validate()){
+            ($_FILES["Picture"]["name"]['name'] ? $picture->name = UploadedFile::getInstance($picture, 'name') : "");
 
-            $article_id=Articles::find()->select(['id'])->orderBy('id desc')->limit(1)->one();
-            $picture->article_id=$article_id->id;
+            $picture->article_id = $article->id;
+            $picture->name=$picture->uploadFile($picture->article_id,$picture->name);
 
-            $path = Yii::getAlias('@backend/web/img/article_pics/' .$picture->article_id . '/');
+            $picture->save();
 
-            if (FileHelper::createDirectory($path, $mode = 0775, $recursive = true)) {
-                $picture->name->saveAs(Yii::getAlias($path). $picture->name->baseName . '.' .
-                    $picture->name->extension);
-            }
+            Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl());
 
-                $picture->name=$picture->name->baseName . '.' . $picture->name->extension;
+            $article->picture_id = $picture->id;
 
-
-                $picture->save();
-
-                Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl());
-//            }
-
-
-            $pic_id=Picture::find()->select(['id'])->orderBy('id desc')->limit(1)->one();
-
-            $article_id->picture_id=$pic_id->id;
-
-            $article_id->save();
+            $article->save();
 
 
         }

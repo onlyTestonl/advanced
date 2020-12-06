@@ -1,6 +1,6 @@
 <?php
 
-use backend\models\Articles;
+use common\models\Articles;
 use backend\models\Picture;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;

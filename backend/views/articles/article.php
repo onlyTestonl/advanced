@@ -1,6 +1,6 @@
-<p>
+<h1>
     <?=$article->title?>
-</p>
+</h1>
 <p>
     <?=$article->text?>
 </p>

@@ -5,8 +5,9 @@ use backend\models\Picture;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use backend\models\Articles;
+use common\models\Articles;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * Site controller
@@ -37,24 +38,33 @@ class ArticlesController extends Controller
      */
     public function actionIndex()
     {
-        $articles=Articles::find()->all();
-
-        $pictures=Picture::find()->all();
+        $articles=Articles::find()->with('picture')->all();
 
         return $this->render('index',[
             'articles'=>$articles,
-            'pictures'=>$pictures,
         ]);
     }
 
     public function actionArticle(){
 
-        $article=Articles::find()->where(['id'=>Yii::$app->request->get()['id']])->one();
-        if($article==NULL){
-            $article=Articles::find()->where('id'==0)->one();
+        $id=Yii::$app->request->get()['id'];
+        $id=(int)$id;
+        if (is_int($id)) {
+            $article = Articles::find()->where(['id' =>$id])->one();
+            if ($article!=NULL){
+                $article->countViews();
+                $article->save();
+            }
+            else {
+                throw new NotFoundHttpException;
+
+            }
+
         }
-        $article->hits+=1;
-        $article->save();
+        else {
+            throw new NotFoundHttpException;
+
+        }
 
         return $this->render('article',[
             'article'=>$article

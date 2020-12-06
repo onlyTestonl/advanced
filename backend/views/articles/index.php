@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
 <div class="site-index">
 
@@ -12,33 +14,35 @@ use yii\helpers\Url;
     <div class="body-content">
 
 
-
         <div class="row">
-            <? foreach($articles as $article):?>
-            <?php
-                foreach($pictures as $picture){
-                    if ($picture->id==$article->picture_id) {
-                        $path = '/backend/web/img/article_pics/' . $article->id . '/' . $picture->name;
+            <? foreach ($articles as $article): ?>
+                <?php
 
-                    }
-                    else {
-                        $path ='/backend/web/img/article_pics/1/264566.jpg';
+                $pictures = $article->picture;
+
+                foreach ($pictures as $picture) {
+                    if ($picture->name) {
+                        $path = $picture->name;
+                    } else {
+                        $path = '/frontend/web/img/article_pics/52/264566.jpg';
                     }
                 }
 
+
                 ?>
-            <div class="col-lg-4">
-                <img src="<?= $path;?>" width="col-lg-4" height="200px"/>
-                <h2><?=$article->title?></h2>
+                <div class="col-lg-12 top-cover center-block">
+                    <img src="<?= $path; ?>" width="col-lg-12"/>
+                    <h2><?= $article->title ?></h2>
 
-                <p><?=$article->getShortText($article->text)?></p>
+                    <p><?= $article->getShortText($article->text) ?></p>
 
-                <p><?=$article->data?></p>
+                    <p><?= $article->data ?></p>
 
-                <p><?=$article->hits?></p>
+                    <p><?= $article->hits ?></p>
 
-                <p><a class="btn btn-default" href="<?=Url::to(['articles/article', 'id'=>$article->id] )?>">Подробнее &raquo;</a></p>
-            </div>
+                    <p><a class="btn btn-default" href="<?= Url::to(['articles/article', 'id' => $article->id]) ?>">Подробнее
+                            &raquo;</a></p>
+                </div>
             <? endforeach; ?>
         </div>
 

@@ -2,7 +2,11 @@
 
 namespace backend\models;
 
+use common\models\Articles;
 use Yii;
+use yii\base\Exception;
+use yii\helpers\FileHelper;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "picture".
@@ -47,6 +51,24 @@ class Picture extends \yii\db\ActiveRecord
             'article_id' => 'Article ID',
             'name' => 'Name',
         ];
+    }
+
+    public function uploadFile($id, $name)
+    {
+
+        $path = Yii::getAlias('@frontend/web/img/article_pics/' . $id . '/');
+
+        try {
+            if (FileHelper::createDirectory($path, $mode = 0775, $recursive = true)) {
+
+                $name->saveAs($path . $name->baseName . '.' . $name->extension);
+            }
+        } catch (Exception $e) {
+            throw new NotFoundHttpException;
+        }
+
+        return '/frontend/web/img/article_pics/' . $id . '/' . $name->baseName . '.' . $name->extension;
+
     }
 
     /**
